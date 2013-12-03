@@ -31,20 +31,6 @@ default['nagios']['pagerduty']['script_url'] = 'https://raw.github.com/PagerDuty
 default['nagios']['pagerduty']['service_notification_options'] = 'w,u,c,r'
 default['nagios']['pagerduty']['host_notification_options'] = 'd,r'
 
-case node['platform_family']
-when 'debian'
-  default['nagios']['server']['install_method'] = 'package'
-  default['nagios']['server']['service_name']   = 'nagios3'
-  default['nagios']['server']['mail_command']   = '/usr/bin/mail'
-when 'rhel', 'fedora'
-  default['nagios']['server']['install_method'] = 'source'
-  default['nagios']['server']['service_name']   = 'nagios'
-  default['nagios']['server']['mail_command']   = '/bin/mail'
-else
-  default['nagios']['server']['install_method'] = 'source'
-  default['nagios']['server']['service_name']   = 'nagios'
-  default['nagios']['server']['mail_command']   = '/bin/mail'
-end
 
 default['nagios']['home']          = '/usr/lib/nagios3'
 default['nagios']['conf_dir']      = '/etc/nagios3'
@@ -54,6 +40,32 @@ default['nagios']['cache_dir']     = '/var/cache/nagios3'
 default['nagios']['state_dir']     = '/var/lib/nagios3'
 default['nagios']['run_dir']       = '/var/run/nagios3'
 default['nagios']['docroot']       = '/usr/share/nagios3/htdocs'
+
+case node['platform_family']
+when 'debian'
+  default['nagios']['server']['install_method'] = 'package'
+  default['nagios']['server']['service_name']   = 'nagios3'
+  default['nagios']['server']['mail_command']   = '/usr/bin/mail'
+when 'rhel', 'fedora'
+  default['nagios']['server']['install_method'] = 'source'
+  default['nagios']['server']['service_name']   = 'nagios'
+  default['nagios']['server']['mail_command']   = '/bin/mail'
+
+  default['nagios']['home']          = '/usr/lib/nagios'
+  default['nagios']['conf_dir']      = '/etc/nagios'
+  default['nagios']['config_dir']    = '/etc/nagios/conf.d'
+  default['nagios']['log_dir']       = '/var/log/nagios'
+  default['nagios']['cache_dir']     = '/var/log/nagios'
+  default['nagios']['state_dir']     = '/var/log/nagios'
+  default['nagios']['run_dir']       = '/var/run/nagios'
+  default['nagios']['docroot']       = '/usr/share/nagios/html'
+
+else
+  default['nagios']['server']['install_method'] = 'source'
+  default['nagios']['server']['service_name']   = 'nagios'
+  default['nagios']['server']['mail_command']   = '/bin/mail'
+end
+
 default['nagios']['timezone']      = 'UTC'
 default['nagios']['enable_ssl']    = false
 default['nagios']['http_port']     = node['nagios']['enable_ssl'] ? '443' : '80'

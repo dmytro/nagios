@@ -10,7 +10,12 @@ cfg_dir=<%= node['nagios']['config_dir'] %>
 object_cache_file=<%= node['nagios']['cache_dir'] %>/objects.cache
 precached_object_file=<%= node['nagios']['cache_dir'] %>/objects.precache
 
+<% case node['platform_family'] -%>
+<% when  'rhel', 'fedora' -%>
+resource_file=<%= node['nagios']['conf_dir'] %>/private/resource.cfg
+<% else -%>
 resource_file=<%= node['nagios']['conf_dir'] %>/resource.cfg
+<% end -%>
 status_file=<%= node['nagios']['cache_dir'] %>/status.dat
 status_update_interval=10
 <%= node['nagios']['server']['name'] %>_user=<%= node['nagios']['user'] %>
