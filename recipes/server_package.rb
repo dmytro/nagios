@@ -36,3 +36,13 @@ end
 node['nagios']['server']['packages'].each do |pkg|
   package pkg
 end
+
+# RPM's are installed with Apache permissions, set to Nginx.
+case node['platform_family']
+when 'rhel', 'fedora'
+  execute "set_premissions" do
+    command "cd #{node['nagios']['docroot']} && chgrp -R #{node['nagios']['server']['web_server'].to_s} *"
+    only_if { node['nagios']['server']['web_server'] == :nginx }
+  end
+end
+
