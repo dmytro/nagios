@@ -24,12 +24,18 @@ server {
 
 <% if @cgi %>
 <%=
-nginx_dispatch(:cgi,
-  :custom => %q(
-    fastcgi_param AUTH_USER $remote_user;
-    fastcgi_param REMOTE_USER $remote_user;
-  )
-)
+   nginx_dispatch(
+                  :cgi,
+                  {
+                    :pattern     => node['nagios']['server']['cgi_dispatch']['args']['pattern'],
+                    :cgi_bin_dir => node['nagios']['server']['cgi_dispatch']['args']['cgi_bin_dir'], 
+                    :dispatcher  => node['nagios']['server']['cgi_dispatch']['args']['dispatcher'],
+                    :custom => %q(
+                    fastcgi_param AUTH_USER $remote_user;
+                    fastcgi_param REMOTE_USER $remote_user;
+                   )
+                  }
+                  )
 %>
 <% end %>
 

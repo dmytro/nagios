@@ -139,3 +139,15 @@ default['nagios']['server']['nginx_dispatch'] = :cgi
 default['nagios']['server']['stop_apache']    = false
 default['nagios']['server']['redirect_root']  = false
 default['nagios']['server']['normalize_hostname'] = false
+
+
+case node['platform_family']
+when 'rhel', 'fedora'
+  default['nagios']['server']['cgi_dispatch']['args']['pattern'] = '^/nagios/cgi-bin/.*\.cgi$'
+  default['nagios']['server']['cgi_dispatch']['args']['cgi_bin_dir'] = '/usr/lib64'
+  default['nagios']['server']['cgi_dispatch']['args']['dispatcher'] = '127.0.0.1:9001'
+else
+  default['nagios']['server']['cgi_dispatch']['args']['pattern'] = '^/cgi-bin/.*\.cgi$'
+  default['nagios']['server']['cgi_dispatch']['args']['cgi_bin_dir'] = '/usr/lib'
+  default['nagios']['server']['cgi_dispatch']['args']['dispatcher'] =  'unix:/var/run/nginx/cgiwrap-dispatch.sock'
+end
