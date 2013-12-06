@@ -136,7 +136,12 @@ high_host_flap_threshold=20.0
 date_format=iso8601
 
 use_timezone=<%= node['nagios']['timezone'] %>
+<% case node['platform_family'] -%>
+<% when 'rhel', 'fedora' -%>
+p1_file=/usr/sbin/p1.pl
+<% else -%>
 p1_file=<%= node['nagios']['home'] %>/p1.pl
+<% end -%>
 enable_embedded_perl=1
 use_embedded_perl_implicitly=1
 

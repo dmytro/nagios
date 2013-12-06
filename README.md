@@ -84,6 +84,11 @@ The following attributes are used for the Nagios server
 *  `node['nagios']['server']['checksum']` - checksum of the source files
 *  `node['nagios']['url']` - URL to host Nagios from - defaults to nil and instead uses  FQDN
 
+
+*  `node['nagios']['server']['cgi_dispatch']['args']['pattern']` - change this match CGI path if it's different from ^/cgi-bin/
+*  `node['nagios']['server']['cgi_dispatch']['args']['cgi_bin_dir']` - directory wher CGI files are installed. On RH 64 bit system, it's `/usr/lib64`
+*  `node['nagios']['server']['cgi_dispatch']['args']['dispatcher']` - CGI dispather, path to socket or host:port.
+
 * `node['nagios']['notifications_enabled']` - set to 1 to enable notification.
 * `node['nagios']['check_external_commands']`
 * `node['nagios']['default_contact_groups']`

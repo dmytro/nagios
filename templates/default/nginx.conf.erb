@@ -52,8 +52,13 @@ nginx_dispatch(:php,
 <% end %>
 
   location /<%= node['nagios']['server']['vname'] %>/stylesheets {
+<% case node['platform_family'] -%>
+<% when 'debian', 'ubuntu' -%>
     alias /etc/<%= node['nagios']['server']['vname'] %>/stylesheets;
-  }
+<% when 'rhel', 'fedora' -%>
+    alias /usr/share/nagios/html/stylesheets/;
+<% end -%>
+}
 
   location /<%= node['nagios']['server']['vname'] %> {
     alias <%= @docroot %>;

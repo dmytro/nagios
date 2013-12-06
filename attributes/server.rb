@@ -41,6 +41,10 @@ default['nagios']['state_dir']     = '/var/lib/nagios3'
 default['nagios']['run_dir']       = '/var/run/nagios3'
 default['nagios']['docroot']       = '/usr/share/nagios3/htdocs'
 
+# nagios server name and webserver vname.  this can be changed to allow for the installation of icinga
+default['nagios']['server']['name']  = 'nagios'
+default['nagios']['server']['vname'] = 'nagios3'
+
 case node['platform_family']
 when 'debian'
   default['nagios']['server']['install_method'] = 'package'
@@ -50,6 +54,7 @@ when 'rhel', 'fedora'
   default['nagios']['server']['install_method'] = 'source'
   default['nagios']['server']['service_name']   = 'nagios'
   default['nagios']['server']['mail_command']   = '/bin/mail'
+  default['nagios']['server']['vname']          = 'nagios'
 
   default['nagios']['home']          = '/usr/lib/nagios'
   default['nagios']['conf_dir']      = '/etc/nagios'
@@ -57,7 +62,7 @@ when 'rhel', 'fedora'
   default['nagios']['log_dir']       = '/var/log/nagios'
   default['nagios']['cache_dir']     = '/var/log/nagios'
   default['nagios']['state_dir']     = '/var/log/nagios'
-  default['nagios']['run_dir']       = '/var/run/nagios'
+  default['nagios']['run_dir']       = '/var/run'
   default['nagios']['docroot']       = '/usr/share/nagios/html'
 
 else
@@ -75,9 +80,6 @@ default['nagios']['ssl_cert_key']  = "#{node['nagios']['conf_dir']}/certificates
 default['nagios']['ssl_req']       = '/C=US/ST=Several/L=Locality/O=Example/OU=Operations/' +
   "CN=#{node['nagios']['server_name']}/emailAddress=ops@#{node['nagios']['server_name']}"
 
-# nagios server name and webserver vname.  this can be changed to allow for the installation of icinga
-default['nagios']['server']['name']  = 'nagios'
-default['nagios']['server']['vname'] = 'nagios3'
 
 # for server from source installation
 default['nagios']['server']['url']      = 'http://prdownloads.sourceforge.net/sourceforge/nagios'
