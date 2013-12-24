@@ -117,7 +117,7 @@ if nodes.empty?
 end
 
 # Sort by name to provide stable ordering
-nodes.sort! { |a, b| a.name <=> b.name }
+nodes.sort! { |a, b| a['name'] <=> b['name'] }
 
 # maps nodes into nagios hostgroups
 service_hosts = {}
