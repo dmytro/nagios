@@ -121,18 +121,20 @@ nodes.sort! { |a, b| a['name'] <=> b['name'] }
 
 # maps nodes into nagios hostgroups
 service_hosts = {}
-search(:role, '*:*') do |r|
-  hostgroups << r.name
-  nodes.select { |n| n['roles'].include?(r.name) }.each do |n|
-    service_hosts[r.name] = n[node['nagios']['host_name_attribute']]
+
+# TODO: :role search doesn't work
+search(:roles) do |r|
+  hostgroups << r['name']
+  nodes.select { |n| n['roles'].include?(r['name']) }.each do |n|
+    service_hosts[r['name']] = n[node['nagios']['host_name_attribute']]
   end
 end
 
 # if using multi environment monitoring add all environments to the array of hostgroups
 if node['nagios']['multi_environment_monitoring']
-  search(:environment, '*:*') do |e|
-    hostgroups << e.name
-    nodes.select { |n| n.chef_environment == e.name }.each do |n|
+  search(:environment) do |e|
+    hostgroups << e['name']
+    nodes.select { |n| n['chef_environment'] == e['name'] }.each do |n|
       service_hosts[e.name] = n[node['nagios']['host_name_attribute']]
     end
   end
