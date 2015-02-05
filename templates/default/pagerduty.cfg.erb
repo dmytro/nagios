@@ -16,10 +16,10 @@ define contact {
 
 define command {
        command_name     notify-service-by-pagerduty
-       command_line     <%= node['nagios']['plugin_dir'] %>/notify_pagerduty.pl enqueue -f pd_nagios_object=service
+       command_line /usr/local/rvm/bin/rvm-exec <%= @rvm_bindir -%>notify_pagerduty -K $CONTACTPAGER$ -H $HOSTNAME$ -I $HOSTADDRESS$ -a $HOSTALIAS$ -S $SERVICEDESC$ -s $SERVICESTATE$ -N $NOTIFICATIONTYPE$ "$SERVICEOUTPUT$"
 }
 
 define command {
        command_name     notify-host-by-pagerduty
-       command_line     <%= node['nagios']['plugin_dir'] %>/notify_pagerduty.pl enqueue -f pd_nagios_object=host
+       command_line     /usr/local/rvm/bin/rvm-exec <%= @rvm_bindir -%>notify_pagerduty -K $CONTACTPAGER$ -H $HOSTNAME$ -I $HOSTADDRESS$ -a $HOSTALIAS$ -s $HOSTSTATE$ -N $NOTIFICATIONTYPE$ "$HOSTOUTPUT$"
 }

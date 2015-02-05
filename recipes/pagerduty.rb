@@ -1,9 +1,8 @@
 #
-# Author:: Jake Vanderdray <jvanderdray@customink.com>
-# Cookbook Name:: nagios
+# Cookbook Name:: coiney
 # Recipe:: pagerduty
 #
-# Copyright 2011, CustomInk LLC
+# Copyright 2014, Dmytro Kovalov
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,55 +15,24 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+#
+# Nagios to Pager integration, instead of standard nagios::pagerduty, which is broken.
+#
+install_file = "#{Chef::Config[:file_cache_path]}/everpager.tar.gz"
+install_dir = "#{Chef::Config[:file_cache_path]}/everpager"
 
-# TODO: remove when backward compatibility is dropped.
-def using_old_pagerduty_key_attribute?
-  node['nagios']['pagerduty_key'] &&
-  node['nagios']['pagerduty_key'] != node['nagios']['pagerduty']['key']
+remote_file install_file do
+  source "https://github.com/gerirgaudi/everpager/archive/master.tar.gz"
 end
 
-if using_old_pagerduty_key_attribute?
-  Chef::Log.warn('The nagios.pagerduty_key attribute is deprecated. It is replaced by the nagios.pagerduty.key attribute.')
-  Chef::Log.warn('Assigning nagios.pagerduty.key from nagios.pagerduty_key now.')
-  node.set['nagios']['pagerduty']['key'] = node['nagios']['pagerduty_key']
+directory install_dir
+
+execute :install do
+  command "cd #{install_dir} && tar --strip-components=1 -xzf #{ install_file } && gem build everpager.gemspec && gem install everpager-*.gem"
+  not_if "gem list evernote --local | grep evernote > /dev/null 2>&1 "
 end
 
-package 'libwww-perl' do
-  case node['platform_family']
-  when 'rhel', 'fedora'
-    package_name 'perl-libwww-perl'
-  when 'debian'
-    package_name 'libwww-perl'
-  when 'arch'
-    package_name 'libwww-perl'
-  end
-  action :install
-end
-
-package 'libcrypt-ssleay-perl' do
-  case node['platform_family']
-  when 'rhel', 'fedora'
-    package_name 'perl-Crypt-SSLeay'
-  when 'debian'
-    package_name 'libcrypt-ssleay-perl'
-  when 'arch'
-    package_name 'libcrypt-ssleay-perl'
-  end
-  action :install
-end
-
-remote_file "#{node['nagios']['plugin_dir']}/notify_pagerduty.pl" do
-  owner 'root'
-  group 'root'
-  mode 00755
-  source node['nagios']['pagerduty']['script_url']
-  action :create_if_missing
-end
-
-nagios_conf 'pagerduty'
-
-cron 'Flush Pagerduty' do
-  user node['nagios']['user']
-  mailto 'root@localhost'
-  command "#{node['nagios']['plugin_dir']}/notify_pagerduty.pl flush"
+nagios_conf 'pagerduty' do
+  variables rvm_bindir: node['coiney']['rvm']['binpath']
 end
