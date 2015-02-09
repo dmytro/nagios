@@ -88,7 +88,12 @@ default['nagios']['server']['checksum'] = '469381b2954392689c85d3db733e8da4bd43b
 default['nagios']['server']['src_dir'] = 'nagios'
 
 # for server from packages installation
-default['nagios']['server']['packages'] = %w[nagios3 nagios-nrpe-plugin nagios-images]
+case node['platform_family']
+when 'rhel', 'fedora'
+  default['nagios']['server']['packages'] = ['nagios', 'nagios-common', 'nagios-plugins-all']
+else
+  default['nagios']['server']['packages'] = %w[nagios3 nagios-nrpe-plugin nagios-images]
+end
 
 default['nagios']['notifications_enabled']     = 0
 default['nagios']['check_external_commands']   = true
